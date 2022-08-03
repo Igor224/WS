@@ -1,0 +1,15 @@
+{
+  "name": "ws-table",
+  "version": "1.0.0",
+  "author": "IV",
+  "description": "Websocket No Library",
+  "license": "MIT",
+  "dependencies": {
+    "nodemon": "^2.0.19",
+    "eslint": "^8.19.0",
+    "eslint-config-google": "^0.14.0"
+  },
+  "scripts": {
+    "dev": "nodemon index.js"
+  }
+}

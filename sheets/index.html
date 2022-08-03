@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<body>
+<table id="table"></table>
+<style>
+#table { margin: 0 auto}
+input { border: 1px solid green; height: 50px; width: 50px; }
+</style>
+<script>
+
+  const socket = new WebSocket('ws://localhost:8000');
+
+  const id = `${Math.round(Math.random() * 30)}_${Date.now()}`;
+  const table = document.getElementById('table');
+  const cells = {};
+  const letters = ['A', 'B', 'C', 'D', 'E'];
+
+  socket.addEventListener('open', (e) => {
+    console.log('Connected!!!');
+    console.log('sending...', id);
+  });
+
+  socket.addEventListener('close', (e) => {
+    console.log('Disconected from WSocket!!!');
+  });
+
+  socket.addEventListener('error', (err) => {
+    console.error('Disconected from WSocket with ErRo!!!', err);
+  });
+
+  socket.addEventListener('message', (dt) => {
+    console.log('RESIVE MESS');
+    let { data } = dt;
+    console.dir(dt);
+    const change = JSON.parse(data);
+    const cell = cells[change.cell];
+    cell.value = change.value;
+  });
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = '<td></td>' +
+    letters.map((col) => `<td>${col}</td>`).join('');
+  table.appendChild(tr);
+
+  const keyup = (event) => {
+    socket.send(JSON.stringify({
+      userId: id,
+      cell: event.target.id,
+      value: event.target.value
+    }));
+  };
+
+  // const foccus = (event) => {
+  //   socket.send(JSON.stringify({
+  //     userId: id,
+  //     cell: event.target.id,
+  //     value: event.target.value
+  //   }));
+  // };
+
+  const createRow = (i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i}</td>` + letters.map(
+      (col) => `<td><input id="${col}${i}" type="text"></td>`
+    ).join('');
+    table.appendChild(tr);
+    letters.forEach((col) => {
+      const cell = col + i;
+      const input = document.getElementById(cell);
+      input.addEventListener('keyup', keyup);
+      // input.addEventListener('focus', foccus);
+      cells[cell] = input; // 
+    });
+  };
+
+  for (let i = 1; i <= 5; i++) createRow(i);
+
+</script>
+</body>
+</html>
