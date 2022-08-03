@@ -10,6 +10,6 @@
     "eslint-config-google": "^0.14.0"
   },
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "cd sheets && nodemon index.js"
   }
 }
